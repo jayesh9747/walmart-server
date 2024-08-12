@@ -44,7 +44,9 @@ cloudinaryConnect()
 // Importing Routes
 const userRoutes = require('./routes/user');
 const DistributionStoreRoutes = require('./routes/DistributionCenter')
-
+const storeRoutes = require('./routes/Store');
+const driverRoutes = require('./routes/driver');
+const deliveriesRoutes = require('./routes/deliveries')
 
 app.get("/", (req, res) => {
     return res.json({
@@ -57,7 +59,10 @@ app.get("/", (req, res) => {
 // Routes
 app.use(CONFIG.APIS.auth, userRoutes);
 app.use(CONFIG.APIS.distribution_center, auth, DistributionStoreRoutes);
-app.use(CONFIG.APIS.store, auth, DistributionStoreRoutes);
+app.use(CONFIG.APIS.store, auth, storeRoutes);
+app.use(CONFIG.APIS.driver, auth, driverRoutes);
+app.use(CONFIG.APIS.delivery,auth,deliveriesRoutes)
+
 
 // Listening to the server
 app.listen(PORT, () => {

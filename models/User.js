@@ -29,6 +29,20 @@ const UserSchema = new mongoose.Schema(
             enum: ["DC_managers", "Store_managers", "Drivers"],
             required: true,
         },
+        // storeId: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: function () {
+        //         if (this.accountType === 'Store_managers') {
+        //             return 'Store';
+        //         } else if (this.accountType === 'DC_managers') {
+        //             return 'DistributionCenter';
+        //         }
+        //         return null;
+        //     },
+        //     required: function () {
+        //         return this.accountType === 'Store_managers' || this.accountType === 'DC_managers';
+        //     }
+        // },
         active: {
             type: Boolean,
             default: true,

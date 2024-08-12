@@ -17,9 +17,9 @@ const ProductSchema = new mongoose.Schema({
         required: true
     },
     dimensions: {
-        length: { type: Number, required: true }, // in centimeters
-        width: { type: Number, required: true },  // in centimeters
-        height: { type: Number, required: true }  // in centimeters
+        length: { type: Number, required: true },
+        width: { type: Number, required: true },
+        height: { type: Number, required: true }
     },
     weight: {
         type: Number,

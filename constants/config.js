@@ -18,7 +18,8 @@ const CONFIG = {
         trailer: '/api/v1/trailer',
         route: '/api/v1/route',
         distribution_center: '/api/v1/distribution-center',
-        store: '/api/v1/store'
+        store: '/api/v1/store',
+        driver: '/api/v1/driver'
     },
     KEYS: {
         CLOUDINARY: {
@@ -35,6 +36,11 @@ const CONFIG = {
     },
     JWT: {
         TOKEN: process.env.JWT_SECRET
+    },
+    ACCOUNT_TYPE: {
+        STORE: "Store_managers",
+        DISTRIBUTION_CENTER: "DC_managers",
+        DRIVER: "Drivers"
     }
 };
 

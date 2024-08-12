@@ -5,10 +5,12 @@ const { required } = require('joi');
 const DeliverySchema = new mongoose.Schema({
     DistributionCenterId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref : "DistributionCenter"
     },
     storeId: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        ref : "Store"
     },
     pickupLocation: {
         address: { type: String, required: true },

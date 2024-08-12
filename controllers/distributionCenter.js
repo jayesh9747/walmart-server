@@ -18,7 +18,6 @@ exports.AssignDelivery = async (req, res) => {
         }
 
 
-
         const DC = await distribution_center.findOne({ dsId });
 
         if (!DC) {
@@ -43,7 +42,7 @@ exports.Deliveries = async (req, res) => {
 
         if (!dis_centerId) {
             return res.status(400).json(
-                errorFunction(false, "Distribution Center field is required")
+                errorFunction(false, "You are not Authenticated!")
             );
         }
 

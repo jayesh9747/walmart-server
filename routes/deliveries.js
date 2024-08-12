@@ -3,15 +3,18 @@ const router = express.Router();
 const Joi = require('joi');
 const validateWith = require('../middleware/validation')
 
-const Delivery = require('../controllers/delivery')
+const { FetchDelivery } = require('../controllers/delivery')
+
 
 
 const endpoints = {
-    AVAILABLE_DELIVERIES :'/deliveries/available'
+    AVAILABLE_DELIVERIES: '/deliveries/available',
+    GET_DELIVERIES: '/:delivery_id?'
 }
 
 
-router.post(endpoints.AVAILABLE_DELIVERIES, )
+// router.post(endpoints.AVAILABLE_DELIVERIES,)
+router.post(endpoints.GET_DELIVERIES, FetchDelivery)
 
 
 
