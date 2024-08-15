@@ -1,12 +1,14 @@
-const store = require('../models/Store');
-const distributionCenter = require('../models/DistributionCenter')
-const { errorFunction } = require('../utils/errorFunction')
+const Store = require('../models/Store');
+const DistributionCenter = require('../models/DistributionCenter')
+const { errorFunction } = require('../utils/errorFunction');
+const mongoose = require('mongoose');
+
 
 //  fetching from the distribution store 
 exports.fetch_stores = async (req, res) => {
-
     try {
         const dis_centerId = req.store.id;
+        const storeId = req.params.storeId;
 
         if (!dis_centerId) {
             return res.status(400).json(
@@ -14,7 +16,17 @@ exports.fetch_stores = async (req, res) => {
             );
         }
 
-        const distributionCenter = await DistributionCenter.findById(dis_centerId).populate('storeIds');
+        if (storeId && !mongoose.Types.ObjectId.isValid(storeId)) {
+            return res.status(400).json(
+                errorFunction(false, "Incorrect storeId ID. Please provide a valid ID.")
+            );
+        }
+
+        const distributionCenter = await DistributionCenter.findById(dis_centerId)
+            .populate({
+                path: 'storeIds',
+                match: storeId ? { _id: storeId } : {}
+            });
 
         if (!distributionCenter) {
             return res.status(404).json(
@@ -22,9 +34,47 @@ exports.fetch_stores = async (req, res) => {
             );
         }
 
+        const stores = storeId ? distributionCenter.storeIds : distributionCenter.storeIds;
+
         return res.status(200).json({
             success: true,
-            stores: distributionCenter.storeIds
+            data: stores
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json(
+            errorFunction(false, "An error occurred while fetching stores", error.message)
+        );
+    }
+}
+
+
+
+
+// fetch own store Details 
+exports.store_details = async (req, res) => {
+    try {
+
+        const StoreId = req.store.id;
+
+        if (!StoreId) {
+            return res.status(400).json(
+                errorFunction(false, "You are not Authenticated")
+            );
+        }
+
+        const storeCenter = await Store.findById(StoreId);
+
+        if (!storeCenter) {
+            return res.status(404).json(
+                errorFunction(false, " Store not found!")
+            );
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: storeCenter
         });
 
 
@@ -34,7 +84,6 @@ exports.fetch_stores = async (req, res) => {
             errorFunction(false, "An error occurred while fetching stores", error.message)
         );
     }
-
 }
 
 // for the distribution-center
@@ -60,7 +109,7 @@ exports.Add_store = async (req, res) => {
             _id: store_id
         }
 
-        const result = await store.findOne(query);
+        const result = await Store.findOne(query);
 
         if (!result) {
             res.status(400).json(
@@ -95,7 +144,73 @@ exports.Add_store = async (req, res) => {
     }
 }
 
-// fetch the inventory of perticular store 
+// fetch the inventory of perticular store  for both distribution center or store
 exports.Inventories = async (req, res) => {
 
+    const { id: dis_center } = req.store;
+
+}
+
+
+// for store manager only
+exports.UpdateStore = async (req, res) => {
+    try {
+        const { id: userID } = req.user;
+        const { id: storeId } = req.store;
+
+        const {
+            name,
+            location,
+            squareFeet,
+            openingDate,
+            type,
+            areaPopulation,
+            dailyVisitors
+        } = req.body;
+
+        if (!userID) {
+            return res.status(400).json(
+                errorFunction(false, "You are not Authenticated")
+            );
+        }
+
+        if (!storeId) {
+            return res.status(400).json(
+                errorFunction(false, "You are not Authenticated , pls Login Again")
+            );
+        }
+
+        const updatedStore = await Store.findByIdAndUpdate(
+            storeId,
+            {
+                name,
+                location,
+                squareFeet,
+                openingDate,
+                type,
+                areaPopulation,
+                dailyVisitors
+            },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedStore) {
+            return res.status(400).json(
+                errorFunction(false, "Failed to update Store")
+            );
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Store successfully updated!",
+            data: updatedStore
+        });
+
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json(
+            errorFunction(false, "An error occurred while updating the store", error.message)
+        );
+    }
 }

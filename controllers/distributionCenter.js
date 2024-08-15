@@ -1,4 +1,5 @@
 const store = require('../models/Store');
+const DistributionCenter = require('../models/DistributionCenter')
 const Delivery = require('../models/Delivery');
 const { errorFunction } = require('../utils/errorFunction');
 
@@ -23,8 +24,6 @@ exports.AssignDelivery = async (req, res) => {
         if (!DC) {
             return res.json(errorFunction(false, "Distribution Center Not found"));
         }
-
-
 
     } catch (error) {
         return res.json(
@@ -76,4 +75,44 @@ exports.Deliveries = async (req, res) => {
             errorFunction(false, `Some Error in fetch Delivery`, error.message)
         )
     }
+}
+
+exports.GetDistributionCenter = async (req, res) => {
+    try {
+
+        const dis_CenterId = req.store.id;
+
+        if (!dis_CenterId) {
+            return res.status(400).json(
+                errorFunction(false, "You are not Authenticated")
+            );
+        }
+
+        const DisCenter = await DisCenter.findById(dis_centerId);
+
+        if (!DisCenter) {
+            return res.status(404).json(
+                errorFunction(false, "Distribution not found!")
+            );
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: DisCenter
+        });
+
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json(
+            errorFunction(false, "An error occurred while fetching Distribution Center", error.message)
+        );
+    }
+}
+
+
+exports.UpdatedDistributionCenter = async (req, res) => {
+
+    
+
 }

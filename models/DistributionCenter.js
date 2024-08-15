@@ -7,29 +7,31 @@ const DistributionCenterSchema = new mongoose.Schema({
         trim: true,
     },
     address: {
-        street: { type: String, required: true },
-        city: { type: String, required: true },
-        state: { type: String, required: true },
-        zipCode: { type: String, required: true },
-        country: { type: String, required: true }
+        street: { type: String },
+        city: { type: String },
+        state: { type: String },
+        zipCode: { type: String },
+        country: { type: String }
+    },
+    about: {
+        type: String
     },
     storageCapacity: {
         type: Number,
-        required: true
     },
     operatingHours: {
-        openingTime: { type: String, required: true },
-        closingTime: { type: String, required: true }
+        openingTime: { type: String },
+        closingTime: { type: String }
     },
     contactInfo: {
-        managerName: { type: String, required: true },
-        managerId: { type: mongoose.Schema.Types.ObjectId, required: true },
-        phone: { type: String, required: true },
-        email: { type: String, required: true }
+        managerName: { type: String },
+        managerId: { type: mongoose.Schema.Types.ObjectId },
+        phone: { type: String },
+        email: { type: String }
     },
     managedProducts: [{
         productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-        stock: { type: Number, required: true }
+        stock: { type: Number }
     }],
     isActive: {
         type: Boolean,

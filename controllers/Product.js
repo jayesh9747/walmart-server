@@ -1,18 +1,53 @@
+
 const Delivery = require('../models/Delivery');
 const { errorFunction } = require('../utils/errorFunction');
 const { CONFIG } = require('../constants/config')
 const mongoose = require('mongoose');
 
 
-exports.available_delivery = async (req, res) => {
+// only for the manager or store manager
+exports.Get_products = async (req, res) => {
     try {
+        const { id } = req.params;
+        const { category } = req.query;
+
+        let query = {};
+
+        if (id) {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return res.status(400).json(errorFunction(false, "Invalid product ID"));
+            }
+            query._id = id;
+        }
+
+        if (category) {
+            query.category = category;
+        }
+
+        const products = id
+            ? await Product.findOne(query) // Find a specific product by ID
+            : await Product.find(query);
+
+        if (!products || (Array.isArray(products) && products.length === 0)) {
+            return res.status(404).json(errorFunction(false, "No products found"));
+        }
+
+        return res.status(200).json({
+            status: true,
+            data: products
+        })
 
     } catch {
-
+        console.error("Error in FetchProducts:", error);
+        return res.status(500).json(
+            errorFunction(false, "An error occurred while fetching the Products.", error.message)
+        );
     }
 }
 
-exports.FetchDelivery = async (req, res) => {
+
+// only for the store manager
+exports.Create_products = async (req, res) => {
     try {
         const { id: userId, account_type: accountType } = req.user;
         const { id: storeId } = req.store;
@@ -76,33 +111,4 @@ exports.FetchDelivery = async (req, res) => {
         );
     }
 };
-
-exports.CreateDelivery = async (req, res) => {
-    try {
-        const { id: userId, account_type: accountType } = req.user;
-        const { id: storeId } = req.store;
-
-        const {
-
-        } = req.body; 
- 
-
-
-        if (userId == null) {
-            return res.status(401).json(errorFunction(false, "You are not authenticated!"));
-        }
-
-        if (accountType !== CONFIG.ACCOUNT_TYPE.DISTRIBUTION_CENTER) {
-            return res.status(401).json(errorFunction(false, "You are not permitted to Create deliveries!"))
-        }
-
-
-        
-
-
-    } catch (error) {
-
-    }
-};
-
 

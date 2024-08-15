@@ -7,16 +7,20 @@ const mongoose = require('mongoose');
 
 const { CONFIG } = require('../constants/config');
 
+// check karna bacha hai 
 exports.FetchDriver = async (req, res) => {
     try {
 
         const dsId = req.store.id;
+        console.log(dsId);
 
         if (!dsId) {
             return res.json(errorFunction(false, "Distribution Center field is required"));
         }
 
-        const DC = await distribution_center.findOne({ dsId });
+        console.log(dsId)
+
+        const DC = await distribution_center.findById(dsId);
 
         if (!DC) {
             return res.json(errorFunction(false, "Distribution Center Not found"));
@@ -26,10 +30,12 @@ exports.FetchDriver = async (req, res) => {
 
         const statusOrder = ['assigned', 'onDelivery', 'available'];
 
-        let filter = { dsId };
+        let filter = { _id : dsId };
         if (status && statusOrder.includes(status)) {
             filter.status = status;
         }
+
+        console.log("filter",filter);
 
         const allAvailableDriver = available_driver.find(filter);
 
@@ -39,11 +45,13 @@ exports.FetchDriver = async (req, res) => {
         })
 
     } catch (error) {
-        return res.status(500).json(errorFunction(false, error.message))
+        console.log(error)
+        return res.status(500).json(errorFunction(false, JSON.stringify(error.message)))
     }
 }
 
 
+//  check karna  bachha hai 
 exports.ChooseDelivery = async (req, res) => {
     try {
         const { id: driverId, account_type: accountType } = req.user;

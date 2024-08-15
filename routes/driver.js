@@ -4,7 +4,8 @@ const router = express.Router();
 const {
     ChooseDelivery,
     GetDelivery
-} = require('../controllers/driver')
+} = require('../controllers/driver');
+const { isDriver } = require('../middleware/auth');
 
 const endpoints = {
     ACCEPT_REJECT_DELIVERY: '/delivery/:deliveryId/respond',
@@ -13,7 +14,7 @@ const endpoints = {
     SCAN_QR: "/driver/:drziverId/delivery/:deliveryId/checkpoint/:pointId/scan",
 };
 
-router.post(endpoints.ACCEPT_REJECT_DELIVERY, ChooseDelivery);
+router.post(endpoints.ACCEPT_REJECT_DELIVERY, isDriver, ChooseDelivery);
 
 
 module.exports = router;

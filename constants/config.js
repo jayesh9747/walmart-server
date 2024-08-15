@@ -41,6 +41,10 @@ const CONFIG = {
         STORE: "Store_managers",
         DISTRIBUTION_CENTER: "DC_managers",
         DRIVER: "Drivers"
+    },
+    STORE_TYPE :{
+        STORE :"Store",
+        DISTRIBUTION_CENTER : "Distribution Center"
     }
 };
 

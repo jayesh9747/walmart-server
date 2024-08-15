@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const {CONFIG} = require('../constants/config')
 
 
 const profileSchema = new mongoose.Schema({
@@ -40,7 +41,7 @@ const profileSchema = new mongoose.Schema({
     },
     vehicleDetails: {
         make: {
-            type: String, // FORD
+            type: String, 
             trim: true,
         },
         model: {
@@ -58,12 +59,28 @@ const profileSchema = new mongoose.Schema({
     },
     experienceYears: {
         type: Number,
-    },
-    storeId: {
-        type: mongoose.Types.ObjectId,
-        ref: "Store"
     }
 });
 
+// // Pre-save middleware to validate vehicleDetails based on accountType
+// profileSchema.pre('save', async function (next) {
+//     if (!this.isModified('userId')) return next();
+
+//     const User = mongoose.model('User');  // Access the User model
+//     const user = await User.findById(this.userId);
+
+//     if (!user) {
+//         return next(new Error('User not found'));
+//     }
+
+//     // If the user is a Driver, ensure vehicleDetails are provided
+//     if (user.accountType === CONFIG.ACCOUNT_TYPE.DRIVER) {
+//         if (!this.vehicleDetails || !this.vehicleDetails.make || !this.vehicleDetails.model || !this.vehicleDetails.licenseNumber) {
+//             return next(new Error('Vehicle details are required for Drivers'));
+//         }
+//     }
+
+//     next();
+// });
 
 module.exports = mongoose.model("Profile", profileSchema);

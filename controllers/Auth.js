@@ -10,7 +10,8 @@ const AvailabilityStatus = require('../models/AvailabilityStatus');
 const Store = require('../models/Store');
 const DistributionCenter = require('../models/DistributionCenter')
 const { errorFunction } = require('../utils/errorFunction')
-require("dotenv").config()
+require("dotenv").config();
+const { CONFIG } = require('../constants/config')
 
 // Signup Controller for Registering USers
 exports.signup = async (req, res) => {
@@ -27,7 +28,7 @@ exports.signup = async (req, res) => {
             contactNumber,
             otp,
             platform,
-            storeId
+            storeId,
         } = req.body;
 
         // Check if All Details are there or not
@@ -105,17 +106,19 @@ exports.signup = async (req, res) => {
             })
         }
 
+        let store;
         if (accountType === "Store_managers") {
-            const store = await Store.create({
-                managerName: firstName + " " + lastName
+            store = await Store.create({
+                managerName: firstName + " " + lastName,
+                managerId: user._id
             })
         }
 
-        if (accountType === "DC_managers") {
-            const dis_center = await DistributionCenter.create({
+        if (accountType === CONFIG.ACCOUNT_TYPE.DISTRIBUTION_CENTER) {
+            store = await DistributionCenter.create({
                 contactInfo: {
                     managerName: firstName + " " + lastName,
-                    contactNumber: contactNumber,
+                    managerId: user._id,
                     email: email
                 }
             })
@@ -124,6 +127,7 @@ exports.signup = async (req, res) => {
         return res.status(200).json({
             success: true,
             user,
+            store,
             message: "User registered successfully",
         })
     } catch (error) {
@@ -148,7 +152,8 @@ exports.login = async (req, res) => {
         }
 
         // Find user with provided email
-        const user = await User.findOne({ email }).populate("additionalDetails")
+        const user = await User.findOne({ email }).populate("additionalDetails");
+
 
         let storeToken = null;
         if (user.accountType === 'Store_managers') {
@@ -162,8 +167,8 @@ exports.login = async (req, res) => {
             }
         }
 
-        if (user.accountType === "DC_managers") {
-            const dis_center = await DistributionCenter.findOne({ managerId: user._id });
+        if (user.accountType === CONFIG.ACCOUNT_TYPE.DISTRIBUTION_CENTER) {
+            const dis_center = await DistributionCenter.findOne({ 'contactInfo.managerId': user._id });
             if (dis_center) {
                 storeToken = jwt.sign(
                     { id: dis_center._id, type: "Distribution Center" },
@@ -209,6 +214,7 @@ exports.login = async (req, res) => {
             res.status(200).json({
                 success: true,
                 token,
+                storeToken,
                 user,
                 message: `User Login Success`,
             })

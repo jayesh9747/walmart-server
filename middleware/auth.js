@@ -2,6 +2,8 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { CONFIG } = require('../constants/config');
+const Store = require('../models/Store');
+const DistributionCenter = require('../models/DistributionCenter')
 
 
 // This function is used as middleware to authenticate user requests
@@ -18,6 +20,7 @@ exports.auth = async (req, res, next) => {
             req.body.store ||
             req.header("Authorization").replace("Bearer ", "");
 
+         
 
         // If JWT is missing, return 401 Unauthorized response
         if (!token) {
@@ -50,14 +53,14 @@ exports.auth = async (req, res, next) => {
     }
 };
 
-exports.isStudent = async (req, res, next) => {
+exports.isDriver = async (req, res, next) => {
     try {
         const userDetails = await User.findOne({ email: req.user.email });
 
-        if (userDetails.accountType !== "Student") {
+        if (userDetails.accountType !== CONFIG.ACCOUNT_TYPE.DRIVER) {
             return res.status(401).json({
                 success: false,
-                message: "This is a Protected Route for Students",
+                message: "This is a Protected Route for Drivers",
             });
         }
         next();
@@ -68,14 +71,14 @@ exports.isStudent = async (req, res, next) => {
     }
 };
 
-exports.isAdmin = async (req, res, next) => {
+exports.isStoreManager = async (req, res, next) => {
     try {
         const userDetails = await User.findOne({ email: req.user.email });
 
-        if (userDetails.accountType !== "Admin") {
+        if (userDetails.accountType !== CONFIG.ACCOUNT_TYPE.STORE) {
             return res.status(401).json({
                 success: false,
-                message: "This is a Protected Route for Admin",
+                message: "This is a Protected Route for StoreManger",
             });
         }
         next();
@@ -86,17 +89,53 @@ exports.isAdmin = async (req, res, next) => {
     }
 };
 
-exports.isInstructor = async (req, res, next) => {
+exports.isDistributionCenterManager = async (req, res, next) => {
     try {
         const userDetails = await User.findOne({ email: req.user.email });
         console.log(userDetails);
 
         console.log(userDetails.accountType);
 
-        if (userDetails.accountType !== "Instructor") {
+        if (userDetails.accountType !== CONFIG.ACCOUNT_TYPE.DISTRIBUTION_CENTER) {
             return res.status(401).json({
                 success: false,
-                message: "This is a Protected Route for Instructor",
+                message: "This is a Protected Route for Distribution Center Manager",
+            });
+        }
+        next();
+    } catch (error) {
+        return res
+            .status(500)
+            .json({ success: false, message: `User Role Can't be Verified` });
+    }
+};
+
+exports.isStore = async (req, res, next) => {
+    try {
+        const StoreDetails = await Store.findById(req.store.id);
+
+        if (StoreDetails.type !== CONFIG.ACCOUNT_TYPE.DRIVER) {
+            return res.status(401).json({
+                success: false,
+                message: "This is a Protected Route for Drivers",
+            });
+        }
+        next();
+    } catch (error) {
+        return res
+            .status(500)
+            .json({ success: false, message: `User Role Can't be Verified` });
+    }
+};
+
+exports.isDistributionCenter = async (req, res, next) => {
+    try {
+        const userDetails = await DistributionCenter.findOne({ email: req.user.email });
+
+        if (userDetails.accountType !== CONFIG.ACCOUNT_TYPE.DRIVER) {
+            return res.status(401).json({
+                success: false,
+                message: "This is a Protected Route for Drivers",
             });
         }
         next();
