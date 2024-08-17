@@ -203,12 +203,14 @@ exports.login = async (req, res) => {
             const options = {
                 expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
                 httpOnly: true,
+                secure: false,     
+                sameSite: 'None',
             }
 
             res.cookie("token", token, options);
 
             if (storeToken) {
-                res.cookie("store", storeToken, options);
+                res.cookie("storeToken", storeToken, options);
             }
 
             res.status(200).json({
@@ -218,6 +220,7 @@ exports.login = async (req, res) => {
                 user,
                 message: `User Login Success`,
             })
+            console.log("User Login Success")
         } else {
             return res.status(401).json(
                 errorFunction(false, `Password is incorrect`)
@@ -353,3 +356,4 @@ exports.changePassword = async (req, res) => {
         })
     }
 }
+

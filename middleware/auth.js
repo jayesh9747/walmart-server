@@ -10,17 +10,19 @@ const DistributionCenter = require('../models/DistributionCenter')
 exports.auth = async (req, res, next) => {
     try {
         // Extracting JWT from request cookies, body or header
+
         const token =
             req.cookies.token ||
             req.body.token ||
             req.header("Authorization").replace("Bearer ", "");
 
         const storeToken =
-            req.cookies.store ||
-            req.body.store ||
-            req.header("Authorization").replace("Bearer ", "");
+            req.cookies.storeToken ||
+            req.body.storeToken ||
+            req.header("Store-X-token").replace("Bearer ", "");
 
-         
+            console.log("this is cookie",req.cookies)
+             
 
         // If JWT is missing, return 401 Unauthorized response
         if (!token) {
@@ -32,6 +34,7 @@ exports.auth = async (req, res, next) => {
             // Verifying the JWT using the secret key stored in environment variables
             const decode = await jwt.verify(token, CONFIG.JWT.TOKEN);
             const storedecode = await jwt.verify(storeToken, CONFIG.JWT.TOKEN);
+
             // Storing the decoded JWT payload in the request object for further use
             req.user = decode;
             req.store = storedecode;

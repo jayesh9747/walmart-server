@@ -112,7 +112,27 @@ exports.GetDistributionCenter = async (req, res) => {
 
 
 exports.UpdatedDistributionCenter = async (req, res) => {
+    try {
 
-    
+
+        const storeId = req.store.id;
+
+        if (!storeId) {
+            return res.status(404).json(errorFunction(false, "Store is not found!"))
+        }
+
+        const { name, address, about, storageCapacity } = req.body;
+
+        
+
+
+
+
+
+    } catch (error) {
+
+    }
+
+
 
 }

@@ -10,6 +10,7 @@ const {
     signup,
     sendotp,
     changePassword,
+    profile
 } = require("../controllers/Auth")
 const {
     resetPasswordToken,
@@ -44,13 +45,15 @@ router.post(endpoint.LOG_IN, login)
 //     password: Joi.string().required().min(5),
 // });
 
-router.post(endpoint.SIGN_UP, signup)
+router.post(endpoint.SIGN_UP, signup);
 
 // Route for sending OTP to the user's email
-router.post(endpoint.SEND_OTP, sendotp)
+router.post(endpoint.SEND_OTP, sendotp);
+
+
 
 // Route for Changing the password
-router.post(endpoint.CHANGE_PASSWORD, auth, changePassword)
+router.post(endpoint.CHANGE_PASSWORD, auth, changePassword);
 
 // ********************************************************************************************************
 //                                      Reset Password

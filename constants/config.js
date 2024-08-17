@@ -42,7 +42,7 @@ const CONFIG = {
         DISTRIBUTION_CENTER: "DC_managers",
         DRIVER: "Drivers"
     },
-    STORE_TYPE :{
+      STORE_TYPE :{
         STORE :"Store",
         DISTRIBUTION_CENTER : "Distribution Center"
     }
